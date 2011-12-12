@@ -2,7 +2,7 @@ NAME
     Catalyst::Controller::Accessors - Accessors for a namespaced stash
 
 VERSION
-    version 0.001000
+    version 0.002000
 
 SYNOPSIS
      package MyApp::Controller::Users::Roles;
@@ -20,6 +20,13 @@ SYNOPSIS
      );
 
      cat_has $_ => ( is => 'rw' ) for qw(resultset thing);
+
+     # slot lets us use a different underlying field
+     cat_has other_user => (
+       is => 'ro',
+       namespace => 'MyApp::Controller::Users',
+       slot => 'user',
+     );
 
      sub load_rs {
        my ($self, $c) = @_;
@@ -58,6 +65,9 @@ IMPORTED SUBROUTINES
 
     *
      "namespace" - defaults to current controller
+
+    *
+     "slot" - defaults to accessor name
 
 AUTHOR
     Arthur Axel "fREW" Schmidt <frioux+cpan@gmail.com>
