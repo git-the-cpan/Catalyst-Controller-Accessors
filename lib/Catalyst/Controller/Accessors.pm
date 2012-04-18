@@ -1,6 +1,6 @@
 package Catalyst::Controller::Accessors;
 {
-  $Catalyst::Controller::Accessors::VERSION = '0.002000';
+  $Catalyst::Controller::Accessors::VERSION = '0.003000';
 }
 
 use strict;
@@ -18,6 +18,7 @@ sub cat_has {
   my ( $meta, $name, %options ) = @_;
 
   my $is        = $options{is} || '';
+  my $isa       = $options{isa};
   my $namespace = $options{namespace} || $meta->name;
   my $slot      = $options{slot} || $name;
 
@@ -27,6 +28,7 @@ sub cat_has {
   } elsif ($is eq 'rw') {
     $sub = sub {
       if (exists $_[2]) {
+        $isa->($_[2]) if $isa;
         $_[1]->stash->{$namespace}{$slot} = $_[2]
       } else {
         return $_[1]->stash->{$namespace}{$slot}
@@ -51,7 +53,7 @@ Catalyst::Controller::Accessors - Accessors for a namespaced stash
 
 =head1 VERSION
 
-version 0.002000
+version 0.003000
 
 =head1 SYNOPSIS
 
@@ -69,7 +71,16 @@ version 0.002000
    namespace => 'MyApp::Controller::Users',
  );
 
- cat_has $_ => ( is => 'rw' ) for qw(resultset thing);
+ cat_has thing => ( is => 'rw' );
+
+ use Check::ISA;
+ cat_has resultset => (
+    is => 'rw',
+    isa => sub {
+      die 'resultset needs to be a DBIx::Class::ResultSet, but you passed "$_[0]"'
+         unless obj($_[0], 'DBIx::Class::ResultSet')
+    }
+ );
 
  # slot lets us use a different underlying field
  cat_has other_user => (
@@ -120,6 +131,8 @@ Options:
 
 =item * C<slot> - defaults to accessor name
 
+=item * C<isa> - L<Moo> style validation coderef.  For a set of predefined validators check out L<MooX::Types::MooseLike::Base>.
+
 =back
 
 =head1 AUTHOR
@@ -128,7 +141,7 @@ Arthur Axel "fREW" Schmidt <frioux+cpan@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Arthur Axel "fREW" Schmidt.
+This software is copyright (c) 2012 by Arthur Axel "fREW" Schmidt.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

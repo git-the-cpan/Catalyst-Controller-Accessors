@@ -2,7 +2,7 @@ NAME
     Catalyst::Controller::Accessors - Accessors for a namespaced stash
 
 VERSION
-    version 0.002000
+    version 0.003000
 
 SYNOPSIS
      package MyApp::Controller::Users::Roles;
@@ -19,7 +19,16 @@ SYNOPSIS
        namespace => 'MyApp::Controller::Users',
      );
 
-     cat_has $_ => ( is => 'rw' ) for qw(resultset thing);
+     cat_has thing => ( is => 'rw' );
+
+     use Check::ISA;
+     cat_has resultset => (
+        is => 'rw',
+        isa => sub {
+          die 'resultset needs to be a DBIx::Class::ResultSet, but you passed "$_[0]"'
+             unless obj($_[0], 'DBIx::Class::ResultSet')
+        }
+     );
 
      # slot lets us use a different underlying field
      cat_has other_user => (
@@ -69,11 +78,15 @@ IMPORTED SUBROUTINES
     *
      "slot" - defaults to accessor name
 
+    *
+     "isa" - Moo style validation coderef. For a set of predefined
+     validators check out MooX::Types::MooseLike::Base.
+
 AUTHOR
     Arthur Axel "fREW" Schmidt <frioux+cpan@gmail.com>
 
 COPYRIGHT AND LICENSE
-    This software is copyright (c) 2011 by Arthur Axel "fREW" Schmidt.
+    This software is copyright (c) 2012 by Arthur Axel "fREW" Schmidt.
 
     This is free software; you can redistribute it and/or modify it under
     the same terms as the Perl 5 programming language system itself.
