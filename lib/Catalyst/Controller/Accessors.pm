@@ -1,6 +1,6 @@
 package Catalyst::Controller::Accessors;
 {
-  $Catalyst::Controller::Accessors::VERSION = '0.003000';
+  $Catalyst::Controller::Accessors::VERSION = '0.003001';
 }
 
 use strict;
@@ -43,8 +43,8 @@ sub cat_has {
 
 1;
 
-
 __END__
+
 =pod
 
 =head1 NAME
@@ -53,7 +53,7 @@ Catalyst::Controller::Accessors - Accessors for a namespaced stash
 
 =head1 VERSION
 
-version 0.003000
+version 0.003001
 
 =head1 SYNOPSIS
 
@@ -147,4 +147,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
