@@ -1,6 +1,6 @@
 package Catalyst::Controller::Accessors;
 {
-  $Catalyst::Controller::Accessors::VERSION = '0.003001';
+  $Catalyst::Controller::Accessors::VERSION = '0.003002';
 }
 
 use strict;
@@ -24,9 +24,19 @@ sub cat_has {
 
   my $sub;
   if ($is eq 'ro') {
-    $sub = sub { $_[1]->stash->{$namespace}{$slot} };
+    $sub = sub {
+       die 'You must pass $c to ' . $name unless exists $_[1];
+       die 'The $c you passed must have a stash method, you passed ' . $_[1]
+          unless $_[1]->can('stash');
+
+       $_[1]->stash->{$namespace}{$slot}
+    };
   } elsif ($is eq 'rw') {
     $sub = sub {
+       die 'You must pass $c to ' . $name unless exists $_[1];
+       die 'The $c you passed must have a stash method, you passed ' . $_[1]
+          unless $_[1]->can('stash');
+
       if (exists $_[2]) {
         $isa->($_[2]) if $isa;
         $_[1]->stash->{$namespace}{$slot} = $_[2]
@@ -53,7 +63,7 @@ Catalyst::Controller::Accessors - Accessors for a namespaced stash
 
 =head1 VERSION
 
-version 0.003001
+version 0.003002
 
 =head1 SYNOPSIS
 
@@ -141,7 +151,7 @@ Arthur Axel "fREW" Schmidt <frioux+cpan@gmail.com>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2012 by Arthur Axel "fREW" Schmidt.
+This software is copyright (c) 2013 by Arthur Axel "fREW" Schmidt.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
