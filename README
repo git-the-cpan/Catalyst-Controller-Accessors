@@ -2,7 +2,7 @@ NAME
     Catalyst::Controller::Accessors - Accessors for a namespaced stash
 
 VERSION
-    version 0.003002
+    version 0.003003
 
 SYNOPSIS
      package MyApp::Controller::Users::Roles;
